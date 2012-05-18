@@ -1,4 +1,4 @@
-=== free comments for wordpress vuukle/ ===
+=== Free Comments for Wordpress Vuukle ===
 Contributors: vuukle
 Donate link: http://vuukle.com/
 Tags: comments, spam
