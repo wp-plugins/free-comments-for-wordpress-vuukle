@@ -1,6 +1,6 @@
 <?php
 /*
-	Plugin Name: Vuukle Commenting
+	Plugin Name: Free Comments for WordPress Vuukle
 	Plugin URI:  http://www.vuukle.com/
 	Description: Easily integrate Vuukle Commenting system to your WordPress content.
 	Version:     1.1
