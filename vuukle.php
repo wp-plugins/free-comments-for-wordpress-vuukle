@@ -1,11 +1,11 @@
 <?php
 /*
-	Plugin Name: Free Comments for WordPress Vuukle
+	Plugin Name: Vuukle Commenting
 	Plugin URI:  http://www.vuukle.com/
 	Description: Easily integrate Vuukle Commenting system to your WordPress content.
-	Version:     1.0
+	Version:     1.1
 	Author:      Ravi Mittal
-	Author URI:  http://www.vuukle.com/
+	Author URI:  http://vuukle.com
 */
 
 
@@ -16,6 +16,7 @@ if (!class_exists('Vuukle'))
 		function __construct()
 		{
 			$this->PluginFile = __FILE__;
+			$this->PluginPath = dirname($this->PluginFile) . DIRECTORY_SEPARATOR;
 			$this->PluginName = 'Vuukle';
 			$this->SettingsURL = 'options-general.php?page='.dirname(plugin_basename($this->PluginFile)).'/'.basename($this->PluginFile);
 			$this->SettingsName = 'Vuukle';
@@ -30,6 +31,9 @@ if (!class_exists('Vuukle'))
 			add_filter('plugin_action_links', array(&$this, 'ActionLinks'), 10, 2);
 			add_action('admin_menu', array(&$this, 'AdminMenu'));
 			add_shortcode('vuukle', array(&$this, 'ShortCode'));
+			//add_filter('the_content', array(&$this, 'TheContent'), 100);
+			add_filter('get_comments_number', array(&$this, 'CommentsNumber'), 10, 2);
+			add_filter('comments_template', array(&$this, 'CommentsTemplate'));
 		}
 
 
@@ -45,6 +49,42 @@ if (!class_exists('Vuukle'))
 			else
 			{
 				add_option($this->SettingsName, $this->SettingsDefaults);
+			}
+
+			$this->Settings = get_option($this->SettingsName);
+
+
+			if (!$this->Settings['AppId'])
+			{
+				$Response = wp_remote_retrieve_body(wp_remote_post('http://vuukle.com/api.asmx/quickRegister', 
+					array(
+						'method' => 'POST',
+						'timeout' => 5,
+						'redirection' => 5,
+						'httpversion' => '1.0',
+						'blocking' => true,
+						'headers' => array('Content-type' => 'application/json; charset=utf-8'),
+						'body' => json_encode( array('url' => site_url(), 'email' => get_option('admin_email')) ),
+						'cookies' => array(),
+					)
+				));
+
+				if ($Response && $ResponseData = json_decode($Response, true))
+				{
+					if (isset($ResponseData['d']) && $ResponseDataApp = json_decode($ResponseData['d'], true))
+					{
+						if (isset($ResponseDataApp['biz_id']))
+						{
+							$Settings = get_option($this->SettingsName);
+
+							$Settings['AppId'] = $ResponseDataApp['biz_id'];
+
+							update_option($this->SettingsName, $Settings);
+
+							$this->Settings = get_option($this->SettingsName);
+						}
+					}
+				}
 			}
 		}
 
@@ -114,7 +154,7 @@ if (!class_exists('Vuukle'))
 
 				<h2>Vuukle Settings</h2>
 
-				<p>You can insert Vuukle Commenting system in to your content by using ShortCode <code>[vuukle]</code>.</p>
+				<p>Vuukle Commenting is automatically displayed in place of WordPress default comments. You can also insert Vuukle Commenting system to any other part of your website by using ShortCode <code>[vuukle]</code>.</p>
 
 				<form method="post" action="">
 
@@ -155,6 +195,69 @@ if (!class_exists('Vuukle'))
 
 			return '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\');</script>';
 		}
+
+
+		function TheContent($Content)
+		{
+			global $post;
+
+			if (is_single() && $this->Settings['AppId'] && comments_open($post->ID) && stripos($Content, '[vuukle]') === false)
+			{
+				$Content .= '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\');</script>';
+			}
+
+			return $Content;
+		}
+
+
+		function CommentsNumber($Count, $PostId)
+		{
+			$Permalink = get_permalink($PostId);
+
+			if ($this->Settings['AppId'])
+			{
+				$Response = wp_remote_retrieve_body(wp_remote_post('http://vuukle.com/api.asmx/getcommentcount', 
+					array(
+						'method' => 'POST',
+						'timeout' => 5,
+						'redirection' => 5,
+						'httpversion' => '1.0',
+						'blocking' => true,
+						'headers' => array('Content-type' => 'application/json; charset=utf-8'),
+						'body' => json_encode( array('uri' => $Permalink, 'id' => $this->Settings['AppId']) ),
+						'cookies' => array(),
+					)
+				));
+
+				if ($Response && $ResponseData = json_decode($Response, true))
+				{
+					if (isset($ResponseData['d']) && $ResponseDataApp = json_decode($ResponseData['d'], true))
+					{
+						if (isset($ResponseDataApp['count']))
+						{
+							$Count = $ResponseDataApp['count'];
+						}
+					}
+
+				}
+			}
+
+			return $Count;
+		}
+
+
+		function CommentsTemplate($File)
+		{
+			$CommentsFile = $this->PluginPath.'comments.php';
+
+			if ($this->Settings['AppId'] && file_exists($CommentsFile))
+			{
+				$File = $CommentsFile;
+			}
+
+			return $File;
+		}
+
 	}
 
 	$Vuukle = new Vuukle();
