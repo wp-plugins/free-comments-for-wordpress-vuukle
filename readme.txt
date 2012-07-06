@@ -38,10 +38,14 @@ It’s absolutely Free!
 
 This section describes how to install the plugin and get it working.
 
-1. Upload `vuukle.php` to the `/wp-content/plugins/` directory
-2. Activate the plugin through the 'Plugins' menu in WordPress
-3. After activating it you can go to Settings -> Vuukle and add your App Id
-4. Place `<?php do_action('vuukle'); ?>` in your templates
+1. Activate the plugin through the 'Plugins' menu in WordPress and your Done!
+
+OR
+
+If you want to do it through FTP:
+1. Upload `vuukle.php` and 'comments.php' to the `/wp-content/plugins/` directory
+2. Activate the plugin through the 'Plugins' menu in WordPress and your Done!
+
 
 == Frequently Asked Questions ==
 
