@@ -1,11 +1,11 @@
 <?php
 /*
-	Plugin Name: Free Comments for WordPress Vuukle
+	Plugin Name: Vuukle Comment System
 	Plugin URI:  http://www.vuukle.com/
 	Description: Easily integrate Vuukle Commenting system to your WordPress content.
-	Version:     1.1
+	Version:     1.3
 	Author:      Ravi Mittal
-	Author URI:  http://vuukle.com
+	Author URI:  http://www.vuukle.com
 */
 
 
@@ -30,10 +30,14 @@ if (!class_exists('Vuukle'))
 
 			add_filter('plugin_action_links', array(&$this, 'ActionLinks'), 10, 2);
 			add_action('admin_menu', array(&$this, 'AdminMenu'));
+					
 			add_shortcode('vuukle', array(&$this, 'ShortCode'));
 			//add_filter('the_content', array(&$this, 'TheContent'), 100);
 			add_filter('get_comments_number', array(&$this, 'CommentsNumber'), 10, 2);
 			add_filter('comments_template', array(&$this, 'CommentsTemplate'));
+
+			// import action
+			add_action('wp_ajax_vkimport', array($this, 'VkImport'));
 		}
 
 
@@ -117,6 +121,7 @@ if (!class_exists('Vuukle'))
 
 		function Admin()
 		{
+			//do_action( "wp_ajax_vkimport" );
 			if (!current_user_can('manage_options'))
 			{
 				wp_die(__('You do not have sufficient permissions to access this page.'));
@@ -146,8 +151,9 @@ if (!class_exists('Vuukle'))
 				{
 					print '<div class="error"><p><strong>Security check failed! Settings not saved.</strong></p></div>';
 				}
+			
 			}
-
+			
 		?>
 
 			<div class="wrap">
@@ -179,6 +185,40 @@ if (!class_exists('Vuukle'))
 
 				</form>
 
+				<!--## Import View ##-->
+				<h3>Exporting your Wordpress Comments </h3>
+				<span>Just Hit the Export button below and we will transfer your existing comments to your new Vuukle Comment System</span>
+				<br/>
+				<h3>Exporting your Disqus Comments </h3>
+				<ul>
+					<li>Re-activate your disqus plugin(in case you have disabled it) </li>
+					<li>Go to the &quot;Advanced Options&quot; tab</li>
+					<li>Under the &quot;Import / Export&quot; section you will see an option to <b>Sync Comments</b> click this 
+						button to sync your comments with Wordpress.</li>
+					<li>Now click the below <b>Export</b> button to transfer all your Disqus comments to your new Vuukle Comment System</li>
+				</ul>
+		
+				<script src=<?php echo plugins_url('export.js', __FILE__); ?>></script>
+				<div id="vk_import" class="submit"><a class="button-primary" href="javascript:vk_export_start('<?php echo admin_url( 'admin-ajax.php'); ?>');"> Export </a></div>
+				<?php 
+				// automatic sync code for dsq to sync
+				if (function_exists(dsq_sync_comments)){
+						echo '<script> 
+						var vk_import_btn = document.getElementById(\'vk_import\');
+						vk_import_btn.style.display = "none";
+						vk_load(\'', site_url(),'/wp-admin/index.php?cf_action=import_comments&last_comment_id=0&wipe=0\', 
+								function (r){
+									
+									vk_import_btn.style.display = "block";
+									//console.log(r);
+								});	
+						</script> ';
+				
+				}
+									?>
+					
+
+				<!--##ENDOF Import View ##-->
 			</div>
 
 		<?php
@@ -257,11 +297,84 @@ if (!class_exists('Vuukle'))
 
 			return $File;
 		}
+		function VkImport()
+		{
+			/*
+				 1: vk_request count_comments : send total number of in post & comments join 
+				 2: vk_request send_comments=n : send 
 
+
+			*/
+			global $wpdb;
+			$json_string = '';
+			$result =  array(); //r2d2
+			// count comments 
+			
+			if(isset($_REQUEST['count_comments'])) {
+				//select sum(comment_count) as `total` from wp_posts where comment_count > 0 
+
+				$a = $wpdb->get_results("select count(id) as `total_post`, sum(comment_count) as `total_comments` from $wpdb->posts where comment_count > 0");	
+				$result = $a[0];
+				echo 'FFFFFFFFFFFF!<br>', get_option('disqus_api_key');
+			}
+			
+
+			// retrive comments 
+			if(isset($_REQUEST['send_comments'])) {
+				$posts = $wpdb->get_results( "select id, guid as `url`, comment_count  from $wpdb->posts where comment_count > 0 " );	
+
+				
+				$no_posts = sizeof($posts);
+				for($i= 0; $i< $no_posts; $i+=1) {
+					
+					$comments = $wpdb->get_results( "select comment_author as 'name', 
+							comment_author_email as 'email', 
+							'' as 'facebookid',   
+							comment_date as 'timestamp',
+							comment_content as 'comment'
+							from $wpdb->comments where comment_post_id = '".$posts[$i]->id."'" );	
+					
+					/*
+					$no_comments = sizeof($comments);
+
+					for($j=0; $j < $no_comments; $j+=1) {
+
+						//$comments[$j]->comment =  reg_replace("@'@",'`',$comments[$j]->comment); //  	
+						$comments[$j]->comment =  addslashes($comments[$j]->comment); //  	
+						//echo addslashes($comments[$j]->comment) ,'<br />';
+					}
+
+					//*/
+
+					$post_comments  = array(
+						'url' => $posts[$i]->url, 
+						'data'=> $comments
+					);
+					array_push($result, $post_comments);
+					
+
+
+				}
+				//echo '<pre>';
+				//print_r($result);
+				
+				
+			} 
+
+			$this->VK_import_flash($result);
+			exit();
+		}
+	
+		function VK_import_flash($result){
+				$json_string = json_encode($result);
+
+				if(isset($_REQUEST['callback'])){
+					echo $_REQUEST['callback'], '(', $json_string, ');';
+				}else{
+					echo  $json_string;
+				}
+				
+		}
 	}
-
 	$Vuukle = new Vuukle();
 }
-
-
-?>
