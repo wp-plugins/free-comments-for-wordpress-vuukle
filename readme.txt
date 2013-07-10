@@ -3,7 +3,7 @@ Contributors: vuukle
 Donate link: http://vuukle.com/
 Tags: comments, spam
 Requires at least: 2.0.2
-Tested up to: 2.1
+Tested up to: 3.5.2
 Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
