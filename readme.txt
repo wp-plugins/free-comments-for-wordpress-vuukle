@@ -3,6 +3,7 @@ Contributors: vuukle
 Donate link: http://vuukle.com/
 Tags: comments, spam
 Requires at least: 2.0.2
+Version: 1.4
 Tested up to: 3.5.2
 Stable tag: 4.3
 License: GPLv2 or later
