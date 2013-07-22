@@ -3,9 +3,9 @@
 	Plugin Name: Vuukle Comment System
 	Plugin URI:  http://www.vuukle.com/
 	Description: Easily integrate Vuukle Commenting system to your WordPress content.
-	Version:     1.3
-	Author:      Ravi Mittal
-	Author URI:  http://www.vuukle.com
+	Version:     1.4
+	Author:      Milan Kaneria
+	Author URI:  http://brandintellect.in/
 */
 
 
@@ -26,17 +26,14 @@ if (!class_exists('Vuukle'))
 				'AppId' => '',
 			);
 
-			register_activation_hook($this->PluginFile, array(&$this, 'Activate'));
+			register_activation_hook($this->PluginFile, array($this, 'Activate'));
 
-			add_filter('plugin_action_links', array(&$this, 'ActionLinks'), 10, 2);
-			add_action('admin_menu', array(&$this, 'AdminMenu'));
-					
-			add_shortcode('vuukle', array(&$this, 'ShortCode'));
-			//add_filter('the_content', array(&$this, 'TheContent'), 100);
-			add_filter('get_comments_number', array(&$this, 'CommentsNumber'), 10, 2);
-			add_filter('comments_template', array(&$this, 'CommentsTemplate'));
-
-			// import action
+			add_filter('plugin_action_links_'.plugin_basename($this->PluginFile), array($this, 'ActionLinks'));
+			add_action('admin_menu', array($this, 'AdminMenu'));
+			add_shortcode('vuukle', array($this, 'ShortCode'));
+			//add_filter('the_content', array($this, 'TheContent'), 100);
+			add_filter('get_comments_number', array($this, 'CommentsNumber'), 10, 2);
+			add_filter('comments_template', array($this, 'CommentsTemplate'));
 			add_action('wp_ajax_vkimport', array($this, 'VkImport'));
 		}
 
@@ -93,21 +90,11 @@ if (!class_exists('Vuukle'))
 		}
 
 
-		function ActionLinks($Links, $File)
+		function ActionLinks($Links)
 		{
-			static $FilePlugin;
+			$Link = "<a href='$this->SettingsURL'>Settings</a>";
 
-			if (!$FilePlugin)
-			{
-				$FilePlugin = plugin_basename($this->PluginFile);
-			}
-	
-			if ($File == $FilePlugin)
-			{
-				$Link = "<a href='$this->SettingsURL'>Settings</a>";
-
-				array_push($Links, $Link);
-			}
+			array_push($Links, $Link);
 
 			return $Links;
 		}
@@ -115,45 +102,40 @@ if (!class_exists('Vuukle'))
 
 		function AdminMenu()
 		{
-			add_submenu_page('options-general.php', 'Vuukle &rsaquo; Settings', 'Vuukle', 'manage_options', $this->PluginFile, array(&$this, 'Admin'));
+			add_submenu_page('options-general.php', 'Vuukle &rsaquo; Settings', 'Vuukle', 'manage_options', $this->PluginFile, array($this, 'Admin'));
 		}
 
 
 		function Admin()
 		{
-			//do_action( "wp_ajax_vkimport" );
 			if (!current_user_can('manage_options'))
 			{
 				wp_die(__('You do not have sufficient permissions to access this page.'));
 			}
 
+			if (isset($_POST['action']) && !wp_verify_nonce($_POST['nonce'], $this->SettingsName))
+			{
+				wp_die(__('Security check failed! Settings not saved.', $this->TextDomain));
+			}
+
 			if (isset($_POST['action']) && $_POST['action'] == 'VuukleSaveSettings')
 			{
-				if (wp_verify_nonce($_POST['nonce'], $this->SettingsName))
+				foreach ($_POST as $Key => $Value)
 				{
-					foreach ($_POST as $Key => $Value)
+					if (array_key_exists($Key, $this->SettingsDefaults))
 					{
-						if (array_key_exists($Key, $this->SettingsDefaults))
-						{
-							$Value = trim($Value);
+						$Value = trim($Value);
 
-							$Settings[$Key] = $Value;
-						}
-					}
-
-					if (update_option($this->SettingsName, $Settings))
-					{
-						$this->Settings = get_option($this->SettingsName);
-						print '<div class="updated"><p><strong>Settings saved.</strong></p></div>';
+						$this->Settings[$Key] = $Value;
 					}
 				}
-				else
+
+				if (update_option($this->SettingsName, $this->Settings))
 				{
-					print '<div class="error"><p><strong>Security check failed! Settings not saved.</strong></p></div>';
+					print '<div class="updated"><p><strong>Settings saved.</strong></p></div>';
 				}
-			
 			}
-			
+
 		?>
 
 			<div class="wrap">
@@ -233,7 +215,9 @@ if (!class_exists('Vuukle'))
 				return '<p>Vuukle: Please add App ID in plugin settings page.</p>';
 			}
 
-			return '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\');</script>';
+			global $post;
+
+			return '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
 		}
 
 
@@ -243,7 +227,7 @@ if (!class_exists('Vuukle'))
 
 			if (is_single() && $this->Settings['AppId'] && comments_open($post->ID) && stripos($Content, '[vuukle]') === false)
 			{
-				$Content .= '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\');</script>';
+				$Content .= '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
 			}
 
 			return $Content;
@@ -297,6 +281,8 @@ if (!class_exists('Vuukle'))
 
 			return $File;
 		}
+
+
 		function VkImport()
 		{
 			/*
@@ -375,6 +361,11 @@ if (!class_exists('Vuukle'))
 				}
 				
 		}
+
 	}
+
 	$Vuukle = new Vuukle();
 }
+
+
+?>
