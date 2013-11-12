@@ -9,7 +9,7 @@ Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Vuukle is comments where credibility counts. Everyone hates going through tons of fake comments and reviews and we are fixing that.
+Vuukle is a Social Enagement Tool deisgned for large scale publishers. Install Vuukle in just 2 clicks.
 
 == Description ==
 Vuukle is a social engagement platform especially deisgned for large scale publishers to get the most from your favourite social networks like Facebook, Linkedin, Twitter and Google+.
