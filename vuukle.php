@@ -1,11 +1,11 @@
 <?php
 /*
-	Plugin Name: Vuukle Comment System
-	Plugin URI:  http://www.vuukle.com/
-	Description: Easily integrate Vuukle Commenting system to your WordPress content.
+	Plugin Name: Vuukle Social Enagement
+	Plugin URI:  http://vuukle.com
+	Description: Easily integrate Vuukle Commenting system to your WordPress blog.
 	Version:     1.4
 	Author:      Vuukle
-	Author URI:  http://vuukle.com/
+	Author URI:  http://vuukle.com
 */
 
 
@@ -217,7 +217,7 @@ if (!class_exists('Vuukle'))
 
 			global $post;
 
-			return '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
+			return '<div id="vuukle_div"></div><script src="http://vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
 		}
 
 
@@ -227,7 +227,7 @@ if (!class_exists('Vuukle'))
 
 			if (is_single() && $this->Settings['AppId'] && comments_open($post->ID) && stripos($Content, '[vuukle]') === false)
 			{
-				$Content .= '<div id="vuukle_div"></div><script src="http://www.vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
+				$Content .= '<div id="vuukle_div"></div><script src="http://vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
 			}
 
 			return $Content;
