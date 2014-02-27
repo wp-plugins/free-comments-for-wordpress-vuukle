@@ -3,7 +3,7 @@
 	Plugin Name: Vuukle Social Enagement
 	Plugin URI:  http://vuukle.com
 	Description: Easily integrate Vuukle Commenting system to your WordPress blog.
-	Version:     1.4
+	Version:     1.5
 	Author:      Vuukle
 	Author URI:  http://vuukle.com
 */
@@ -29,6 +29,7 @@ if (!class_exists('Vuukle'))
 			register_activation_hook($this->PluginFile, array($this, 'Activate'));
 
 			add_filter('plugin_action_links_'.plugin_basename($this->PluginFile), array($this, 'ActionLinks'));
+			add_action('admin_menu', array($this, 'VuukleModeration'));
 			add_action('admin_menu', array($this, 'AdminMenu'));
 			add_shortcode('vuukle', array($this, 'ShortCode'));
 			//add_filter('the_content', array($this, 'TheContent'), 100);
@@ -99,6 +100,11 @@ if (!class_exists('Vuukle'))
 			return $Links;
 		}
 
+		function VuukleModeration()
+		{
+			add_menu_page( 'Vuukle Moderation', 'Vuukle', 'manage_options', 'free-comments-for-wordpress-vuukle/moderation.php', '', '', '' );
+		
+		}
 
 		function AdminMenu()
 		{

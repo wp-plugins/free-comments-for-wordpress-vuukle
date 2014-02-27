@@ -1,10 +1,10 @@
 === Free Comments for Wordpress Vuukle ===
 Contributors: vuukle
 Donate link: http://vuukle.com/
-Tags: comments, spam
+Tags: comments, blogs, engagement
 Requires at least: 2.0.2
-Version: 1.4
-Tested up to: 3.7.1
+Version: 1.5
+Tested up to: 3.8.1
 Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -14,7 +14,7 @@ Vuukle is a Social Enagement Tool deisgned for large scale publishers. Install V
 == Description ==
 Vuukle is a social engagement platform especially deisgned for large scale publishers to get the most from your favourite social networks like Facebook, Linkedin, Twitter and Google+.
 
-Our clients include large scale news publishers like http://thehindubusinessline.com, http://financialexpress.com, http://loksatta.com, http://tamil.thehindu.com and many others.
+Our clients include large scale news publishers like http://thehindubusinessline.com, http://financialexpress.com, http://loksatta.com, http://tamil.thehindu.com, http://newindianexpress.com and many others.
 
 If you are looking for a no hassle social engagement tool for your blog, try out Vuukle today! 
 
