@@ -102,7 +102,7 @@ if (!class_exists('Vuukle'))
 
 		function VuukleModeration()
 		{
-			add_menu_page( 'Vuukle Moderation', 'Vuukle', 'manage_options', 'free-comments-for-wordpress-vuukle/moderation.php', '', '', '' );
+			add_menu_page( 'Vuukle Moderation', 'Vuukle', 'manage_options', 'free-comments-for-wordpress-vuukle/moderation.php', '', plugins_url( 'free-comments-for-wordpress-vuukle/icon.png' ), '' );
 		
 		}
 
