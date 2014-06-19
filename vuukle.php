@@ -24,6 +24,9 @@ if (!class_exists('Vuukle'))
 
 			$this->SettingsDefaults = array(
 				'AppId' => '',
+				'Param1' => '',
+				'Param2' => '',
+				'Param3' => '',
 			);
 
 			register_activation_hook($this->PluginFile, array($this, 'Activate'));
@@ -162,6 +165,24 @@ if (!class_exists('Vuukle'))
 							<td>
 								<input name="AppId" type="text" value="<?php print $this->Settings['AppId']; ?>" class="regular-text" />
 							</td>
+							<th scope="row">
+								Param1	
+							</th>
+							<td>
+								<input name="Param1" type="text" value="<?php print $this->Settings['Param1']; ?>" class="regular-text" />
+							</td>
+							<th scope="row">
+								Param2	
+							</th>
+							<td>
+								<input name="Param2" type="text" value="<?php print $this->Settings['Param2']; ?>" class="regular-text" />
+							</td>
+							<th scope="row">
+								Param3	
+							</th>
+							<td>
+								<input name="Param3" type="text" value="<?php print $this->Settings['Param3']; ?>" class="regular-text" />
+							</td>
 						</tr>
 
 					</table>
@@ -223,7 +244,7 @@ if (!class_exists('Vuukle'))
 
 			global $post;
 
-			return '<div id="vuukle_div"></div><script src="http://vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
+			return '<div id="vuukle_div"></div><script src="http://vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\', \''.$this->Settings['Param1'].'\', \''.$this->Settings['Param2'].'\', \''.$this->Settings['Param3'].'\');</script>';
 		}
 
 
@@ -233,7 +254,7 @@ if (!class_exists('Vuukle'))
 
 			if (is_single() && $this->Settings['AppId'] && comments_open($post->ID) && stripos($Content, '[vuukle]') === false)
 			{
-				$Content .= '<div id="vuukle_div"></div><script src="http://vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\');</script>';
+				$Content .= '<div id="vuukle_div"></div><script src="http://vuukle.com/js/vuukle.js" type="text/javascript"></script><script type="text/javascript">create_vuukle_platform(\''.$this->Settings['AppId'].'\', \''.$post->ID.'\', \'0\', \''.strip_tags(get_the_category_list(',', '', $post->ID)).'\', \''.the_title_attribute(array('echo' => false)).'\', \''.$this->Settings['Param1'].'\', \''.$this->Settings['Param2'].'\', \''.$this->Settings['Param3'].'\');</script>';
 			}
 
 			return $Content;

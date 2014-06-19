@@ -1,9 +1,9 @@
 === Free Comments for Wordpress Vuukle ===
 Contributors: vuukle
 Donate link: http://vuukle.com/
-Tags: comments, blogs, engagement
+Tags: comments, blogs, engagement, avatars, comments, community, conversation, email notification, engagement, Facebook, moderation, profile, rich text, sharing, social, spam protection, twitter, widget, email, notification, threaded
 Requires at least: 2.0.2
-Version: 1.5
+Version: 1.6
 Tested up to: 3.9
 Stable tag: 4.3
 License: GPLv2 or later
