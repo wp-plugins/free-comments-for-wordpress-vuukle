@@ -166,19 +166,22 @@ if (!class_exists('Vuukle'))
 								<input name="AppId" type="text" value="<?php print $this->Settings['AppId']; ?>" class="regular-text" />
 							</td>
 							<th scope="row">
-								Param1	
+								Language
+								<br /> 
 							</th>
 							<td>
 								<input name="Param1" type="text" value="<?php print $this->Settings['Param1']; ?>" class="regular-text" />
 							</td>
 							<th scope="row">
-								Param2	
+								Default Language	
+								<br /> 
 							</th>
 							<td>
 								<input name="Param2" type="text" value="<?php print $this->Settings['Param2']; ?>" class="regular-text" />
 							</td>
 							<th scope="row">
-								Param3	
+								Character Limit	
+								<br /> 
 							</th>
 							<td>
 								<input name="Param3" type="text" value="<?php print $this->Settings['Param3']; ?>" class="regular-text" />
