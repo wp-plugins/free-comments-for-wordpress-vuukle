@@ -272,11 +272,11 @@ if (!class_exists('Vuukle'))
 
 		function CommentsNumber($Count, $PostId)
 		{
-			$Permalink = get_permalink($PostId);
+			//$Permalink = get_permalink($PostId);
 
 			if ($this->Settings['AppId'])
 			{
-				$Response = wp_remote_retrieve_body(wp_remote_post('http://vuukle.com/api.asmx/getcommentcount', 
+				$Response = wp_remote_retrieve_body(wp_remote_post('http://vuukle.com/api.asmx/getCommentCountListJSON', 
 					array(
 						'method' => 'POST',
 						'timeout' => 5,
@@ -284,18 +284,18 @@ if (!class_exists('Vuukle'))
 						'httpversion' => '1.0',
 						'blocking' => true,
 						'headers' => array('Content-type' => 'application/json; charset=utf-8'),
-						'body' => json_encode( array('uri' => $Permalink, 'id' => $this->Settings['AppId']) ),
+						'body' => json_encode( array('list' => $PostId, 'id' => $this->Settings['AppId']) ),
 						'cookies' => array(),
 					)
 				));
-
+				$Count = 0;
 				if ($Response && $ResponseData = json_decode($Response, true))
 				{
 					if (isset($ResponseData['d']) && $ResponseDataApp = json_decode($ResponseData['d'], true))
 					{
-						if (isset($ResponseDataApp['count']))
+						if (isset($ResponseDataApp[$PostId]))
 						{
-							$Count = $ResponseDataApp['count'];
+							$Count = $ResponseDataApp[$PostId];
 						}
 					}
 
