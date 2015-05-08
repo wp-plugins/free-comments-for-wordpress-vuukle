@@ -12,7 +12,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Vuukle monetizes your comments section and helps you provide detailed insights about your audience
 
 == Description ==
-Designed for media websites, Vuukle\'s helps your community interact more effectively. Vuukle has also devised a great way to monetize the comments section through \'native advertising\'. So, basically a smart comment system that acts as a revenue source rather than cost.
+**What is Vuukle?**
+Designed for media websites, Vuukle helps your community interact more effectively. Vuukle has also devised a great way to monetize the comments section through 'native advertising'. So, basically a smart comment system that acts as a revenue source rather than cost.
 
 **Benefits of Vuukle**
 1.	Increase in internal referral traffic
@@ -25,7 +26,7 @@ Designed for media websites, Vuukle\'s helps your community interact more effect
 If you have any questions please email us at support@vuukle.com
 
 == Installation ==
-
+**How to Install Vuukle**
 This section describes how to install the plugin and get it working.
 
 1. Activate the plugin through the 'Plugins' menu in WordPress and your Done!
@@ -44,13 +45,13 @@ If you want to do it through FTP:
 
 == Screenshots ==
 1. Comment Login
-'/assets/vuukle_comments_login.jpg'
+`/assets/vuukle_comments_login.jpg`
 
 2. Recomendation Engine
-'/assets/vuukle_recomendation_box.jpg'
+`/assets/vuukle_recomendation_box.jpg`
 
 3. Vuukle Ads
-'/assets/vuukle_native_ads.jpg'
+`/assets/vuukle_native_ads.jpg`
 
 == Changelog ==
 
